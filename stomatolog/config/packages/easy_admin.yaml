@@ -1,0 +1,51 @@
+easy_admin:
+    site_name: 'Gabinet Stomatologiczny'
+    formats:
+        datetime: 'd/m/Y H:i:'
+    design:
+        menu:
+            - { entity: 'Dentist', icon: 'user' }
+            - { entity: 'Patient', icon: 'user-nurse' }
+            - { entity: 'Specialization', icon: 'tag' }
+            - { entity: 'Visit', icon: 'calendar' }
+
+
+    entities:
+        Dentist:
+            label: 'Stomatolodzy'
+            class: App\Entity\Dentist
+            search:
+                fields:
+                - 'FirstName'
+                - 'LastName'
+                - 'specialization.Name'
+            show:
+                fields:
+                - 'FirstName'
+                - 'LastName'
+                - 'specialization'
+                - { property: 'visits', template: 'visits.html.twig'}
+
+        Patient:
+            class: App\Entity\Patient
+            list:
+                fields:
+                    - {property: 'id'}
+                    - {property: 'FirstName'}
+                    - {property: 'LastName'}
+            show:
+                fields:
+                - {label: 'Imię',property: 'FirstName'}
+                - {label: 'Nazwisko', property: 'LastName'}
+            edit:
+                fields:
+                    - {property: 'FirstName'}
+                    - {property: 'LastName'}
+        Specialization:
+            class: App\Entity\Specialization
+        Visit:
+            class: App\Entity\Visit
+    list:
+        actions: ['show']
+
+

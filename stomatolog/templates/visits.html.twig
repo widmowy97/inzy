@@ -1,0 +1,16 @@
+<table class="table">
+    <thead>
+    <tr>
+    <td>Początek wizyty</td>
+    <td>Pacjent</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for visit in value %}
+        <tr>
+        <td>{{ visit.StartDate | date }}</td>
+        <td>{{ visit.patient.FirstName }} {{visit.patient.LastName }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

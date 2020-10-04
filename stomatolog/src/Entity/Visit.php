@@ -7,14 +7,21 @@ use App\Partial\IdAwareInterface;
 use App\Partial\IdAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+// use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class Visit
  * @package App\Entity
  * @ORM\Entity()
- * @ORM\Table(uniqueConstraints={@UniqueConstraint(columns={"start_date", "dentist_id"})})
- * @UniqueEntity(fields={"StartDate",  "dentist"}, message="Proszę wybrać inny termin wizyty")
+ * @ORM\Table(
+ * uniqueConstraints={
+ *     @UniqueConstraint(
+ *         name="one_visit_per_patient_key",
+ *         columns={"start_date", "dentist_id"}
+ *     )
+ * }
+ * )
+ * UniqueEntity(fields={"StartDate",  "dentist",}, message="Proszę wybrać inny termin wizyty")
  */
 
 class Visit implements IdAwareInterface

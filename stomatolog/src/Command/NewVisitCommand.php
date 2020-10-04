@@ -15,14 +15,14 @@ class NewVisitCommand extends Command
 {
     protected static $defaultName = 'app:visit-reminder';
 
-    public $showVisitRepository;
+    public  $visitRepository;
 
     private $mailer;
 
-    public function __construct(ShowVisitRepository $showVisitRepository, \Swift_Mailer $mailer)
+    public function __construct(ShowVisitRepository $visitRepository, \Swift_Mailer $mailer)
     {
         parent::__construct();
-        $this->showVisitRepository = $showVisitRepository;
+        $this->visitRepository = $visitRepository;
         $this->mailer = $mailer;
     }
 
@@ -37,25 +37,27 @@ class NewVisitCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $visits = $this->showVisitRepository->findVisit(new \DateTime());
+            $visits = $this->visitRepository->findTomorrowsVisits();
 
             /** @var Visit $visit */
-            foreach ($visits as $visit) {
+            foreach ($visits as $visit){
                 $message = (new \Swift_Message('Hello Email'))
-                    ->setFrom('stoomatologia09@gmail.com')
+                    ->setFrom('admin@noreply.com')
                     ->setTo($visit->getPatient()->getEmail())
-                    ->setBody('Zapraszamy na wizytę');
+                    ->setBody('Zapraszamy na wizytę '.$visit->getPatient())
+                ;
                 $this->mailer->send($message);
 
-                $io->success(sprintf('Success send', count($visits)));
+                $io->success('Reminder is going to be sent to: '.$visit->getPatient());
             }
 
 
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $io->success('Failure: ' . $e->getMessage());
+            $io->success('Failure: '.$e->getMessage());
 
             return Command::FAILURE;
         }
+
     }
 }

@@ -22,20 +22,22 @@ class ShowVisitRepository extends ServiceEntityRepository
         ]);
     }
 
-    public function findVisit(\DateTime $dateTimeNow): array
+    public function findTomorrowsVisits(): array
     {
-        $StartDate = clone $dateTimeNow;
-        $StartDate = $StartDate->add(new\DateInterval('P1D'));
+        $StartDate = new \DateTime('now');
+        $StartDate->add(new \DateInterval('P1D'));
+        $StartDate->setTime(00, 00, 00);
+
         $EndDate = clone $StartDate;
-        $EndDate = $EndDate->add(new\DateInterval('PT8H'));
+        $EndDate->setTime(23, 59, 59);
 
         $qb = $this->createQueryBuilder('visit');
-        $qb->where('visit.StartDate > :StartDate')
-            ->andWhere('visit.StartDate <= :EndDate')
+        $qb->where('visit.StartDate >= :StartDate')
+            ->andWhere('visit.EndDate <= :EndDate')
             ->setParameter('StartDate', $StartDate)
             ->setParameter('EndDate', $EndDate);
 
-       // var_dump($qb->getQuery()->getSQL());
+       // var_dump($qb->getQuery()->getSQL(),$qb->getQuery()->getParameters());exit;
         $query = $qb->getQuery();
 
         return $query->getResult();
